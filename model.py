@@ -43,12 +43,12 @@ with open("", "rb") as file:
 with open("", "rb") as file:
     purwodadi_tcn_y_scaler = pickle.load("")
 
-model_dhompo_gru = load_model("")
-model_dhompo_lstm = load_model("")
-model_dhompo_tcn = load_model("")
-model_purwodadi_gru = load_model("")
-model_purwodadi_lstm = load_model("") 
-model_purwodadi_tcn = load_model("")
+model_dhompo_gru = load_model("/Model/Dhompo_GRU_t-3.h5")
+model_dhompo_lstm = load_model("/Model/Dhompo_LSTM_t-5.h5")
+model_dhompo_tcn = load_model("/Model/Dhompo_TCN_t-5.h5")
+model_purwodadi_gru = load_model("/Model/Purwodadi_GRU_t-1.h5")
+model_purwodadi_lstm = load_model("/Model/Purwodadi_LSTM_t-2.h5") 
+model_purwodadi_tcn = load_model("/Model/Purwodadi_TCN_t-2.h5")
 
 def dhompo_gru():
     model = model_dhompo_gru
