@@ -1,5 +1,6 @@
 from flask import Flask, request
 from TimeSeriesModel import get_model
+from preprocess_data import get_data
 
 app = Flask(__name__)
 
@@ -12,14 +13,26 @@ def home():
 def api_pred():
     req_daerah = request.args.get('daerah', type = str)
     req_model = request.args.get('model', default = "lstm", type = str)
-    select_model = get_model(f"{req_daerah}_{req_model}")
-    scaled_data ="" #Perform split_sequences and scaling
-    result = select_model.predict(
-        scaled_data,
-        select_model.model,
-        select_model.y_scaler
-    )
-    return result
+    daerah_model = f"{req_daerah}_{req_model}"
+    select_model = get_model(daerah_model)
+    input_data = get_data()
+    
+    if(daerah_model == "dhompo_gru"):
+        n_steps_in = 3
+    elif(daerah_model == "dhompo_lstm"):
+        n_steps_in = 5
+    elif(daerah_model == "dhompo_tcn"):
+        n_steps_in = 5
+    elif(daerah_model == "purwodadi_gru"):
+        n_steps_in = 1
+    elif(daerah_model == "purwdoadi_lstm"):
+        n_steps_in = 2
+    elif(daerah_model == "purwodadi_tcn"):
+        n_steps_in = 2
+    
+    preprocessed_data = select_model.preprocess_data(input_data, n_steps_in)
+    prediction = select_model.predict(preprocessed_data, select_model.model.y_scaler)
+    return prediction
 
 if __name__ == '__main__':
     app.run(host="localhost", port=8000)
