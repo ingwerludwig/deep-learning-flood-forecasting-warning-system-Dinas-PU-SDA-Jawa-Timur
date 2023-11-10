@@ -6,14 +6,14 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def load_scaler(scaler_path):
-    with open(scaler_path, "rb") as file:
+def load_scaler(path_to_scaler):
+    with open(path_to_scaler, "rb") as file:
         return pickle.load(file)
 
 
 class TimeSeriesModel:
-    def __init__(self, model_path, x_scaler_path, y_scaler_path):
-        self.model = load_model(model_path)
+    def __init__(self, path_to_model, x_scaler_path, y_scaler_path):
+        self.model = load_model(path_to_model)
         self.x_scaler = load_scaler(x_scaler_path)
         self.y_scaler = load_scaler(y_scaler_path)
 
@@ -36,9 +36,9 @@ class DhompoDataPreprocessor:
 
     def preprocess_data(self, df_test, n_steps_in):
         df = df_test
-        df['tanggal'] = pd.to_datetime(df['tanggal'])
-        df.sort_values(by='tanggal', ascending=False)
-        df = df.drop(columns=['tanggal'])
+        df['DateTime'] = pd.to_datetime(df['DateTime'])
+        df.sort_values(by='DateTime', ascending=False)
+        df = df.drop(columns=['DateTime'])
 
         x_test_scaled = self.model.x_scaler.transform(df.to_numpy()).reshape(-1, n_steps_in, 4)
         return x_test_scaled
@@ -54,9 +54,9 @@ class PurwodadiDataPreprocessor:
 
     def preprocess_data(self, df_test, n_steps_in):
         df = df_test
-        df['tanggal'] = pd.to_datetime(df['tanggal'])
-        df.sort_values(by='tanggal', ascending=False)
-        df = df.drop(columns=['tanggal', 'LD'])
+        df['DateTime'] = pd.to_datetime(df['DateTime'])
+        df.sort_values(by='DateTime', ascending=False)
+        df = df.drop(columns=['DateTime', 'LD'])
 
         x_test_scaled = self.model.x_scaler.transform(df.to_numpy()).reshape(-1, n_steps_in, 3)
         return x_test_scaled
