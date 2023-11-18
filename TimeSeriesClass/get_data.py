@@ -1,6 +1,5 @@
 import pandas as pd
-from database.db_utils import connect_db, close_db_connection, execute_sql_query
-from sqlalchemy import text
+from database.db_utils import close_db_connection, connect_db, execute_sql_query
 
 
 def get_data_for_train():

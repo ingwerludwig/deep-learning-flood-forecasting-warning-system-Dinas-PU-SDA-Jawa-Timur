@@ -2,8 +2,16 @@ import pickle
 import os
 import pandas as pd
 from tensorflow.keras.models import load_model
+from keras import backend as K
+from tensorflow.keras.layers import LSTM, GRU
+from tcn import TCN
 import warnings
+
 warnings.filterwarnings("ignore")
+
+
+def root_mean_squared_error(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true)))
 
 
 def load_scaler(path_to_scaler):
@@ -13,17 +21,18 @@ def load_scaler(path_to_scaler):
 
 class TimeSeriesModel:
     def __init__(self, path_to_model, x_scaler_path, y_scaler_path):
-        self.model = load_model(path_to_model)
+        self.model = load_model(path_to_model,
+                                custom_objects={'root_mean_squared_error': root_mean_squared_error, 'TCN': TCN,
+                                                'LSTM': LSTM, 'GRU': GRU})
         self.x_scaler = load_scaler(x_scaler_path)
         self.y_scaler = load_scaler(y_scaler_path)
 
-    def predict(self, scaled_data, y_scaler):
-        predictions = y_scaler.inverse_transform(self.model.predict_generator(scaled_data).reshape(-1, 1))
+    def predict(self, scaled_data, y_scaler, n_steps_out):
+        predictions = y_scaler.inverse_transform(self.model.predict_generator(scaled_data).reshape(-1, n_steps_out))
         predictions = pd.DataFrame(predictions)
         predictions = predictions
         predictions = pd.DataFrame(predictions)
-        result = predictions[0]
-        return result
+        return predictions
 
 
 class DhompoDataPreprocessor:
@@ -67,19 +76,19 @@ scaler_path = os.path.join(os.getcwd(), "scaler")
 
 dhompo_gru_preprocessor = DhompoDataPreprocessor("dhompo_gru", model_path, scaler_path)
 dhompo_lstm_preprocessor = DhompoDataPreprocessor("dhompo_lstm", model_path, scaler_path)
-# dhompo_tcn_preprocessor = DhompoDataPreprocessor("dhompo_tcn", model_path, scaler_path)
+dhompo_tcn_preprocessor = DhompoDataPreprocessor("dhompo_tcn", model_path, scaler_path)
 purwodadi_gru_preprocessor = PurwodadiDataPreprocessor("purwodadi_gru", model_path, scaler_path)
 purwodadi_lstm_preprocessor = PurwodadiDataPreprocessor("purwodadi_lstm", model_path, scaler_path)
-# purwodadi_tcn_preprocessor = PurwodadiDataPreprocessor("purwodadi_tcn", model_path, scaler_path)
+purwodadi_tcn_preprocessor = PurwodadiDataPreprocessor("purwodadi_tcn", model_path, scaler_path)
 
 
 def get_model(model_name):
     models = {
         "dhompo_gru": dhompo_gru_preprocessor,
         "dhompo_lstm": dhompo_lstm_preprocessor,
-        # "dhompo_tcn": dhompo_tcn_preprocessor,
+        "dhompo_tcn": dhompo_tcn_preprocessor,
         "purwodadi_gru": purwodadi_gru_preprocessor,
         "purwodadi_lstm": purwodadi_lstm_preprocessor,
-        # "purwodadi_tcn": purwodadi_tcn_preprocessor
+        "purwodadi_tcn": purwodadi_tcn_preprocessor
     }
     return models.get(model_name)

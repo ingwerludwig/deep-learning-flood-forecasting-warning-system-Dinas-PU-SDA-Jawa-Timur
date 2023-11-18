@@ -12,9 +12,9 @@ def connect_db():
 def execute_sql_query(connection, sql_query):
     try:
         result = connection.execute(text(sql_query))
-        return result
+        return result.fetchall(), result.keys()
     except Exception as e:
-        return None  # Handle exceptions as needed
+        return e
 
 
 def close_db_connection(connection):
