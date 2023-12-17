@@ -1,21 +1,16 @@
 import pickle
+from keras import backend as K
 
 
-def train_data(model, x_train_scaled, y_train_scaled, x_val_scaled, y_val_scaled, x_scaler, y_scaler, dearah_model):
+def root_mean_squared_error(y_true, y_pred):
+    return K.sqrt(K.mean(K.square(y_pred - y_true)))
+
+
+def train_data(model_time_series, x_data_scaled, n_features, model_daerah):
     try:
         epoch = 50
-
-        model.compile(optimizer='adam', loss='mae', metrics='mae')
-        model.fit(x_train_scaled, y_train_scaled, batch_size=64, epochs=epoch,
-                  validation_data=(x_val_scaled, y_val_scaled))
-
-        model.save(f"{dearah_model}.h5")
-
-        with open(f"{dearah_model}_x_scaler.pkl", 'wb') as file:
-            pickle.dump(x_scaler, file)
-
-        with open(f"{dearah_model}_y_scaler.pkl", 'wb') as file:
-            pickle.dump(y_scaler, file)
+        model_time_series.fit(x_data_scaled, batch_size=64, epochs=epoch)
+        model_time_series.save(f"{model_daerah}.h5")
 
         return "successful"
     except Exception as e:

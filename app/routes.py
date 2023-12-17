@@ -46,7 +46,6 @@ def get_n_steps_out_for_model(model_name):
 
 @api_bp.route("/api/predict", methods=['POST'])
 def api_pred():
-
     arr_model_daerah = [
         "dhompo_gru",
         "dhompo_lstm",
@@ -69,14 +68,16 @@ def api_pred():
         predicted_from_time = date.strftime("%Y-%m-%d %H:%M:%S")
 
         preprocessed_data = select_model.preprocess_data(pd.DataFrame(input_to_model), n_steps_in)
-        prediction = select_model.model.predict(preprocessed_data, select_model.model.y_scaler,n_steps_out)
+        prediction = select_model.model.predict(preprocessed_data, select_model.model.y_scaler, n_steps_out)
 
         index_looping = 1
+
+        prediction_values = prediction.values.flatten()
 
         prediction_dict = {
             (date + timedelta(hours=i + index_looping)).strftime("%Y-%m-%d %H:%M:%S"): {
                 'value': float(value)
-            } for i, value in enumerate(prediction.values.flatten())
+            } for i, value in enumerate(prediction_values)
         }
 
         predicted_for_time = (date + timedelta(hours=n_steps_out)).strftime("%Y-%m-%d %H:%M:%S")
