@@ -37,7 +37,7 @@ Applied Deep Learning project Repository for Flood Forecasting Warning Sistem Di
 ## Getting Started
 1. Clone this repository
 ```
-git clone https://github.com/ingwerludwig/flood-forecasting-warning-system-Dinas-PU-SDA-Jatim.git
+git clone https://github.com/ingwerludwig/deep-learning-flood-forecasting-warning-system-Dinas-PU-SDA-Jawa-Timur.git
 ```
 2. Install All Dependencies <br>
 * If you Windows/Linux User
