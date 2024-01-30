@@ -2,7 +2,7 @@ version: '3'
 
 services:
   deep-leaning-ffws:
-    image: ffws_python
+    image: ingwerludwig/dinas-pu-ffws-deep-learning:v1
     container_name: ffws-deep-learning
     ports:
       - "8000:8000"

@@ -62,7 +62,16 @@ npm install pm2 -g
 ```
 pm2 start "gunicorn --bind 127.0.0.1:8000 wsgi:gunicorn_app"
 ```
-
+## Starting with Dockerized Python Flask (optional)
+7. Pull Docker Image
+```
+docker pull ingwerludwig/dinas-pu-ffws-deep-learning:v1
+```
+8. Import the docker-compose.yml
+9. Run the Docker Container in docker-compose.yml working directory
+```
+docker compose up -d
+```
 
 ## Web Endpoint Documentation
 https://www.postman.com/myprivatepersonal/workspace/ffws-api-endpoint-testing/collection/26715144-6bb171e5-e1f5-4df6-842c-b0e6417eb53f?action=share&creator=26715144
