@@ -47,12 +47,12 @@ def get_n_steps_out_for_model(model_name):
 @api_bp.route("/api/predict", methods=['POST'])
 def api_pred():
     arr_model_daerah = [
-        "dhompo_gru",
+        # "dhompo_gru",
         "dhompo_lstm",
-        "dhompo_tcn",
+        # "dhompo_tcn",
         "purwodadi_gru",
-        "purwodadi_lstm",
-        "purwodadi_tcn"
+        # "purwodadi_lstm",
+        # "purwodadi_tcn"
     ]
 
     model_dict = {item: {'predictions': {}} for item in arr_model_daerah}

@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from tensorflow.keras.models import load_model
 from keras import backend as K
+from functools import lru_cache
 from tensorflow.keras.layers import LSTM, GRU
 from tcn import TCN
 import warnings
@@ -14,16 +15,20 @@ def root_mean_squared_error(y_true, y_pred):
     return K.sqrt(K.mean(K.square(y_pred - y_true)))
 
 
+@lru_cache(maxsize=None)
 def load_scaler(path_to_scaler):
     with open(path_to_scaler, "rb") as file:
         return pickle.load(file)
 
+@lru_cache(maxsize=None)
+def cache_load_model(path_to_model):
+    return (load_model(path_to_model,custom_objects={'root_mean_squared_error': root_mean_squared_error, 'TCN': TCN,
+                                                'LSTM': LSTM, 'GRU': GRU}))
+
 
 class TimeSeriesModel:
     def __init__(self, path_to_model, x_scaler_path, y_scaler_path):
-        self.model = load_model(path_to_model,
-                                custom_objects={'root_mean_squared_error': root_mean_squared_error, 'TCN': TCN,
-                                                'LSTM': LSTM, 'GRU': GRU})
+        self.model = cache_load_model(path_to_model)
         self.x_scaler = load_scaler(x_scaler_path)
         self.y_scaler = load_scaler(y_scaler_path)
 
