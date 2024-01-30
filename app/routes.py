@@ -12,6 +12,11 @@ def home():
     return "<h1>Hello</h1>"
 
 
+@api_bp.route("/health")
+def health_check():
+    return "OK"
+
+
 def get_n_steps_in_for_model(model_name):
     model_to_n_steps = {
         "dhompo_gru": 5,

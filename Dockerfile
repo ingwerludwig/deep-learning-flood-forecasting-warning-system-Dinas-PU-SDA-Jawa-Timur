@@ -1,15 +1,25 @@
-FROM python:3.9
+FROM python:3.9 as build
+RUN pip install mysqlclient
 
-RUN apt-get update \
-    && apt-get install -y pkg-config \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /python-docker
+FROM python:3.9-slim
+RUN apt-get update && apt-get install -y libmariadb3
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install gunicorn
 
+RUN useradd -m -r -s /bin/bash jatim
+
+COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+
+USER jatim
+RUN mkdir /home/jatim/code
+WORKDIR /home/jatim/code
 COPY . .
+
+EXPOSE 8000
+
+ENV PYTHONUNBUFFERED=1
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "wsgi:gunicorn_app"]

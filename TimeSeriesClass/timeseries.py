@@ -5,7 +5,6 @@ from tensorflow.keras.models import load_model
 from keras import backend as K
 from functools import lru_cache
 from tensorflow.keras.layers import LSTM, GRU
-from tcn import TCN
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -22,8 +21,8 @@ def load_scaler(path_to_scaler):
 
 @lru_cache(maxsize=None)
 def cache_load_model(path_to_model):
-    return (load_model(path_to_model,custom_objects={'root_mean_squared_error': root_mean_squared_error, 'TCN': TCN,
-                                                'LSTM': LSTM, 'GRU': GRU}))
+    return (load_model(path_to_model,custom_objects={'root_mean_squared_error': root_mean_squared_error,'LSTM': LSTM, 'GRU': GRU}))
+    # return (load_model(path_to_model,custom_objects={'root_mean_squared_error': root_mean_squared_error, 'TCN': TCN,'LSTM': LSTM, 'GRU': GRU}))
 
 
 class TimeSeriesModel:
@@ -81,19 +80,19 @@ scaler_path = os.path.join(os.getcwd(), "scaler")
 
 dhompo_gru_preprocessor = DhompoDataPreprocessor("dhompo_gru", model_path, scaler_path)
 dhompo_lstm_preprocessor = DhompoDataPreprocessor("dhompo_lstm", model_path, scaler_path)
-dhompo_tcn_preprocessor = DhompoDataPreprocessor("dhompo_tcn", model_path, scaler_path)
+# dhompo_tcn_preprocessor = DhompoDataPreprocessor("dhompo_tcn", model_path, scaler_path)
 purwodadi_gru_preprocessor = PurwodadiDataPreprocessor("purwodadi_gru", model_path, scaler_path)
 purwodadi_lstm_preprocessor = PurwodadiDataPreprocessor("purwodadi_lstm", model_path, scaler_path)
-purwodadi_tcn_preprocessor = PurwodadiDataPreprocessor("purwodadi_tcn", model_path, scaler_path)
+# purwodadi_tcn_preprocessor = PurwodadiDataPreprocessor("purwodadi_tcn", model_path, scaler_path)
 
 
 def get_model(model_name):
     models = {
         "dhompo_gru": dhompo_gru_preprocessor,
         "dhompo_lstm": dhompo_lstm_preprocessor,
-        "dhompo_tcn": dhompo_tcn_preprocessor,
+        # "dhompo_tcn": dhompo_tcn_preprocessor,
         "purwodadi_gru": purwodadi_gru_preprocessor,
         "purwodadi_lstm": purwodadi_lstm_preprocessor,
-        "purwodadi_tcn": purwodadi_tcn_preprocessor
+        # "purwodadi_tcn": purwodadi_tcn_preprocessor
     }
     return models.get(model_name)
